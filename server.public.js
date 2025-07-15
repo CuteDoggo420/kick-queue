@@ -134,7 +134,7 @@ app.post('/api/webhook', async (req, res) => {
 
   const embed = {
     title: `Kick Queue: ${guild}`,
-    description: `Sorted by worst ratio of sb xp to guild xp\n[GitHub](https://github.com/CuteDoggo420/kick-queue) | [Website](https://kick-queue.onrender.com/)`,
+    description: `Sorted by worst ratio of sb xp to guild xp\n[GitHub](https://github.com/CuteDoggo420/kick-queue) | [Website](https://kick-queue.totemmc.online/)`,
     color: 0xff0000,
     fields,
     timestamp: new Date().toISOString()
