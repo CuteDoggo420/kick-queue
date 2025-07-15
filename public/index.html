@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hypixel Kick Queue</title>
+  <style>
+    body { font-family: sans-serif; margin: 2em; }
+    #cooldown { color: red; margin-top: 1em; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1em; }
+    td, th { border: 1px solid #aaa; padding: 8px; text-align: left; }
+  </style>
+</head>
+<body>
+  <h1>Guild Kick Queue</h1>
+  <input type="text" id="guild" placeholder="Enter guild name">
+  <input type="text" id="webhook" placeholder="Discord Webhook (optional)">
+  <br><br>
+  <button onclick="scan()">Scan Guild</button>
+  <button onclick="sendWebhook()">Send Webhook</button>
+  <button onclick="exportCSV()">Download CSV</button>
+  <div id="status"></div>
+  <div id="cooldown"></div>
+  <table id="results" style="display:none;">
+    <thead>
+      <tr><th>Username</th><th>Level</th><th>GEXP</th><th>Score</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script>
+    let cooldownCheck = setInterval(async () => {
+      const r = await fetch('/api/status');
+      const data = await r.json();
+      if (data.cooldown > 0) {
+        const seconds = Math.ceil(data.cooldown / 1000);
+        document.getElementById('cooldown').innerText = "API Cooldown active. Try again in " + seconds + "s";
+      } else {
+        document.getElementById('cooldown').innerText = "";
+      }
+    }, 10000);
+
+    async function scan() {
+      const guild = document.getElementById('guild').value;
+      document.getElementById('status').innerText = "Scanning...";
+      const res = await fetch('/api/scan?guild=' + encodeURIComponent(guild));
+      const data = await res.json();
+      if (!Array.isArray(data)) {
+        document.getElementById('status').innerText = "Error: " + data.error;
+        return;
+      }
+      const tbody = document.querySelector("#results tbody");
+      tbody.innerHTML = "";
+      data.forEach(p => {
+        const row = `<tr><td>${p.username}</td><td>${p.level}</td><td>${p.weeklyExp}</td><td>${p.score}</td></tr>`;
+        tbody.insertAdjacentHTML("beforeend", row);
+      });
+      document.getElementById('results').style.display = "table";
+      document.getElementById('status').innerText = "Scan complete.";
+    }
+
+    async function exportCSV() {
+      const guild = document.getElementById('guild').value;
+      window.open('/api/export?guild=' + encodeURIComponent(guild), '_blank');
+    }
+
+    async function sendWebhook() {
+      const guild = document.getElementById('guild').value;
+      const webhook = document.getElementById('webhook').value;
+      const res = await fetch('/api/webhook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guild, webhook })
+      });
+      const data = await res.json();
+      document.getElementById('status').innerText = data.success ? "Webhook sent." : "Error: " + data.error;
+    }
+  </script>
+</body>
+</html>
