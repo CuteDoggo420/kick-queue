@@ -25,6 +25,23 @@
     </thead>
     <tbody></tbody>
   </table>
+  <footer style="
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #1e1e1e;
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
+  font-family: sans-serif;
+  font-size: 14px;
+  z-index: 1000;
+">
+  <a href="https://github.com/CuteDoggo420/kick-queue" target="_blank" style="color: #00bfff; margin: 0 15px; text-decoration: none;">GitHub</a>
+  <a href="https://kick-queue.onrender.com/" target="_blank" style="color: #00bfff; margin: 0 15px; text-decoration: none;">Website</a>
+</footer>
+
   <script>
     let cooldownCheck = setInterval(async () => {
       const r = await fetch('/api/status');
