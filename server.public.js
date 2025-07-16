@@ -21,7 +21,7 @@ function delay(ms) {
 
 function calculateScore(level, weeklyExp) {
   const idealLevel = 260;
-  const idealGEXP = 150000;
+  const idealGEXP = 100000;
   const normLevel = Math.min(level / idealLevel, 1);
   const normGEXP = Math.min(weeklyExp / idealGEXP, 1);
   return (2 - (normLevel + normGEXP)) * 100;
